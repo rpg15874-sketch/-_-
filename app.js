@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
             msg.style.color = "#007bff";
 
             try {
+                // 브이월드 API 호출 URL
                 const searchUrl = `https://api.vworld.kr/req/search?service=search&request=search&version=2.0&crs=EPSG:4326&size=1&page=1&query=${encodeURIComponent(address)}&type=address&category=parcel&format=json&errorformat=json&key=${VWORLD_API_KEY}`;
                 
                 const res = await fetch(searchUrl);
@@ -44,12 +45,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 if (targetCategory) {
-                    targetCategory.value = "대"; // (추후 지적도 연계 시 동적 변경 가능)
+                    targetCategory.value = "대"; 
                     targetCategory.dispatchEvent(new Event('input', { bubbles: true }));
                 }
                 
                 if (targetArea) {
-                    targetArea.value = "330"; // (추후 지적도 연계 시 동적 변경 가능)
+                    targetArea.value = "330"; 
                     targetArea.dispatchEvent(new Event('input', { bubbles: true }));
                 }
 
@@ -58,18 +59,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
             } catch (error) {
                 console.error("API 연동 에러:", error);
-                msg.textContent = "조회 중 시스템 오류가 발생했습니다.";
+                msg.textContent = "조회 중 시스템 오류가 발생했습니다. (API 키 도메인 설정을 확인하세요)";
                 msg.style.color = "red";
             }
         });
     }
 
-    // 2. 인풋창에서 엔터(Enter) 키보드 눌렀을 때도 바로 검색되도록 추가
+    // 2. 인풋창에서 엔터(Enter) 눌렀을 때 실행
     if (searchAddress) {
         searchAddress.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
-                e.preventDefault(); // 기본 새로고침 방지
-                btnSearchLand.click(); // 버튼 클릭과 동일한 효과
+                e.preventDefault(); 
+                btnSearchLand.click(); 
             }
         });
     }

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f2f5f8">
+  <title>계약서 서명</title><link rel="stylesheet" href="tablet.css">
+</head>
+<body>
+  <main class="tablet-shell">
+    <header><span class="brand-mark">계약 서명</span><span id="connectionState" class="connection">계약 정보 연결 중…</span></header>
+    <section class="summary-card">
+      <span class="eyebrow">주택임대차 계약서</span>
+      <h1 id="propertyAddress">계약서 정보를 불러오는 중</h1>
+      <div class="summary-row"><span>임대인</span><strong id="landlordName">—</strong></div>
+      <div class="summary-row"><span>임차인</span><strong id="tenantName">—</strong></div>
+    </section>
+    <section class="contract-preview-card">
+      <details open>
+        <summary>계약서 내용 확인 <span>화면을 눌러 접거나 펼칠 수 있습니다.</span></summary>
+        <iframe id="contractPreview" title="계약서 전체 내용"></iframe>
+      </details>
+    </section>
+    <section class="sign-card">
+      <h2>서명하기</h2>
+      <p class="hint">계약 내용을 확인한 다음, 아래 칸에 손가락이나 펜으로 서명하세요.</p>
+      <label for="signer">서명자</label>
+      <select id="signer"><option value="landlord">임대인</option><option value="tenant">임차인</option><option value="broker">개업공인중개사</option></select>
+      <label for="signerName">성명</label>
+      <input id="signerName" autocomplete="name" placeholder="계약서에 기재된 성명">
+      <div class="canvas-wrap"><canvas id="signaturePad" aria-label="서명 입력 칸"></canvas><span class="canvas-placeholder" id="canvasPlaceholder">여기에 서명하세요</span></div>
+      <div class="canvas-actions"><button id="clearSignature" class="clear-button">지우기</button><span>서명이 선명한지 확인하세요</span></div>
+      <label class="consent"><input type="checkbox" id="confirmSign"><span>위 계약서 내용을 확인했고, 이 서명을 계약서에 반영하는 것에 동의합니다.</span></label>
+      <button id="submitSignature" class="submit-button" disabled>서명 제출</button>
+      <p id="resultMessage" class="result-message" aria-live="polite"></p>
+    </section>
+    <p class="privacy-note">서명은 인터넷으로 실시간 전달되어 계약서에 반영됩니다.</p>
+  </main>
+  <script src="document.js"></script><script type="module" src="tablet.js"></script>
+</body>
+</html>

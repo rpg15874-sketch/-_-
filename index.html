@@ -4,16 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>주택임대차 계약 작성</title>
+  <meta name="theme-color" content="#f3f6f9">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header class="topbar">
     <div><div class="eyebrow">GitHub Pages · 계약 작성 · 태블릿 서명</div><h1>주택임대차 계약서</h1></div>
+    <div class="top-actions"><span id="saveState" class="save-state">연결 중…</span><button id="newContract" class="button secondary">새 계약</button></div>
   </header>
   <main class="layout">
     <section class="editor-column">
       <div class="card introduction">
         <div><strong>계약 내용을 작성하세요</strong><p>PC에서 작성한 내용이 태블릿에 실시간으로 나타나고, 제출한 서명도 바로 반영됩니다.</p></div>
+        <span class="badge">반응형 웹사이트</span>
       </div>
 
       <!-- 주소 검색 및 자동완성 UI -->
@@ -34,10 +37,97 @@
             <label>토지 지목<input data-field="landType" /></label><label>토지 면적 (㎡)<input data-field="landArea" inputmode="decimal" /></label>
             <label>건물 구조·용도<input data-field="buildingStructure" /></label><label>건물 면적 (㎡)<input data-field="buildingArea" inputmode="decimal" /></label>
             <label>임차할 부분<input data-field="rentalPart" placeholder="동·층·호 등" /></label><label>임차 부분 면적 (㎡)<input data-field="rentalArea" inputmode="decimal" /></label>
+            <label>차임 유형<select data-field="rentType"><option value="depositMonthly">보증금 있는 월세</option><option value="jeonse">전세</option><option value="monthly">월세</option></select></label>
+            <label>계약 종류<select data-field="contractType"><option value="new">신규 계약</option><option value="renewal">합의에 의한 재계약</option><option value="renewalRight">계약갱신요구권 행사에 의한 갱신</option></select></label>
+            <label>계약일<input type="date" data-field="contractDate" /></label><label>주택 인도일<input type="date" data-field="handoverDate" /></label><label>임대차 종료일<input type="date" data-field="leaseEndDate" /></label>
+            <div class="wide subheading">갱신 계약인 경우 이전 계약</div>
+            <label>이전 계약 시작일<input type="date" data-field="previousStart" /></label><label>이전 계약 종료일<input type="date" data-field="previousEnd" /></label>
+            <label>이전 보증금 (원)<input data-field="previousDeposit" inputmode="numeric" /></label><label>이전 월 차임 (원)<input data-field="previousRent" inputmode="numeric" /></label>
+            <label>미납 국세·지방세<select data-field="unpaidTaxes"><option value="none">없음</option><option value="yes">있음</option></select></label>
+            <label>선순위 확정일자 현황<select data-field="priorDates"><option value="none">해당 없음</option><option value="yes">해당 있음</option></select></label>
+          </div>
+        </details>
+
+        <details open class="form-section">
+          <summary><span class="step">2</span><span><strong>보증금·차임·관리비</strong><small>지급 금액, 날짜 및 계좌</small></span></summary>
+          <div class="form-grid">
+            <label>보증금 (원)<input data-field="deposit" inputmode="numeric" /></label><label>계약금 (원)<input data-field="contractPayment" inputmode="numeric" /></label>
+            <label>계약금 영수자<input data-field="contractPaymentRecipient" /></label><label>중도금 (원)<input data-field="intermediatePayment" inputmode="numeric" /></label>
+            <label>중도금 지급일<input type="date" data-field="intermediateDate" /></label><label>잔금 (원)<input data-field="balance" inputmode="numeric" /></label>
+            <label>잔금 지급일<input type="date" data-field="balanceDate" /></label><label>월 차임 (원)<input data-field="monthlyRent" inputmode="numeric" /></label>
+            <label>매월 지급일<input data-field="rentDay" inputmode="numeric" /></label><label>입금 계좌<input data-field="bankAccount" /></label>
+            <label>관리비 유형<select data-field="maintenanceType"><option value="fixed">정액</option><option value="variable">항목·산정방식 기재</option></select></label>
+            <label>정액 관리비 (원)<input data-field="maintenanceFee" inputmode="numeric" /></label>
+            <label class="wide">관리비 항목·산정방식<textarea data-field="maintenanceDetails" rows="2"></textarea></label>
+          </div>
+        </details>
+
+        <details class="form-section">
+          <summary><span class="step">3</span><span><strong>수리 및 특약</strong><small>입주 전 수리, 비용 부담, 추가 약정</small></span></summary>
+          <div class="form-grid">
+            <label>수리 필요 여부<select data-field="repairNeeded"><option value="no">없음</option><option value="yes">있음</option></select></label>
+            <label>수리 완료 시기<input data-field="repairDeadline" placeholder="예: 잔금 지급일까지" /></label>
+            <label class="wide">수리할 내용<textarea data-field="repairDetails" rows="2"></textarea></label>
+            <label class="wide">미수리 시 처리 방법<textarea data-field="repairRemedy" rows="2"></textarea></label>
+            <label class="wide">임대인 부담 수선<textarea data-field="landlordRepairs" rows="2"></textarea></label>
+            <label class="wide">임차인 부담 수선<textarea data-field="tenantRepairs" rows="2"></textarea></label>
+            <label class="wide">특약 추가 내용<textarea data-field="specialTerms" rows="5" placeholder="한 줄에 특약 하나씩 입력하세요."></textarea></label>
+            <label>전입신고·확정일자 약정일<input type="date" data-field="moveInDate" /></label><label>세금 관련 해제 기준액 (원)<input data-field="taxLimit" inputmode="numeric" /></label>
+            <label>분쟁조정 신청<select data-field="mediation"><option value="agree">동의</option><option value="disagree">미동의</option></select></label>
+            <label>철거·재건축 계획<select data-field="rebuild"><option value="no">없음</option><option value="yes">있음</option></select></label>
+            <label>예정 시기<input data-field="rebuildDate" /></label><label>예상 기간 (개월)<input data-field="rebuildMonths" inputmode="numeric" /></label>
+            <label>상세주소 부여 동의<select data-field="addressConsent"><option value="agree">동의</option><option value="disagree">미동의</option></select></label>
+            <label>중개보수율 (%)<input data-field="brokerageRate" inputmode="decimal" /></label><label>중개보수 (원)<input data-field="brokerageFee" inputmode="numeric" /></label>
+            <label>부가가치세<select data-field="brokerageVat"><option value="included">포함</option><option value="excluded">불포함</option></select></label><label>확인·설명서 교부일<input type="date" data-field="brokerDocsDate" /></label>
+            <label class="wide">기타<textarea data-field="otherTerms" rows="2"></textarea></label>
+          </div>
+        </details>
+
+        <details class="form-section">
+          <summary><span class="step">4</span><span><strong>계약 당사자 및 중개사</strong><small>계약서와 서명란에 표시됩니다</small></span></summary>
+          <div class="person-block"><h3>임대인</h3><div class="form-grid">
+            <label>성명<input data-field="landlordName" /></label><label>전화<input data-field="landlordPhone" inputmode="tel" /></label><label class="wide">주소<input data-field="landlordAddress" /></label>
+            <label>주민등록번호<input data-field="landlordId" /></label><label>대리인<input data-field="landlordAgent" /></label>
+          </div></div>
+          <div class="person-block"><h3>임차인</h3><div class="form-grid">
+            <label>성명<input data-field="tenantName" /></label><label>전화<input data-field="tenantPhone" inputmode="tel" /></label><label class="wide">주소<input data-field="tenantAddress" /></label>
+            <label>주민등록번호<input data-field="tenantId" /></label><label>대리인<input data-field="tenantAgent" /></label>
+          </div></div>
+          <div class="person-block"><h3>개업공인중개사</h3><div class="form-grid">
+            <label>사무소명<input data-field="brokerOffice" /></label><label>등록번호<input data-field="brokerRegistration" /></label>
+            <label>대표 성명<input data-field="brokerName" /></label><label>전화<input data-field="brokerPhone" inputmode="tel" /></label>
+            <label class="wide">사무소 소재지<input data-field="brokerAddress" /></label>
+          </div></div>
+        </details>
+        
+        <details class="form-section">
+          <summary><span class="step">5</span><span><strong>별지 2 · 계약갱신 거절통지서</strong><small>필요한 경우 계약서 뒤에 추가합니다</small></span></summary>
+          <div class="form-grid">
+            <label>별지 2 포함<select data-field="includeRenewalNotice"><option value="no">포함하지 않음</option><option value="yes">포함</option></select></label>
+            <label>임차인의 갱신요구일<input type="date" data-field="renewalRequestDate" /></label>
+            <label class="wide">갱신 거절 사유<select data-field="renewalReason"><option value="1">1. 2기의 차임액에 해당하는 금액 연체</option><option value="2">2. 거짓이나 부정한 방법으로 임차</option><option value="3">3. 임대인의 상당한 보상 제공에 합의</option><option value="4">4. 임대인 동의 없는 전대</option><option value="5">5. 고의·중과실로 임차주택 파손</option><option value="6">6. 주택 멸실로 임대차 목적 달성 불가</option><option value="7-1">7-1. 고지한 철거·재건축 계획</option><option value="7-2">7-2. 노후·훼손 등 안전사고 우려</option><option value="7-3">7-3. 다른 법령에 따른 철거·재건축</option><option value="8">8. 임대인 또는 직계존비속 실거주</option><option value="9">9. 그 밖의 중대한 사유</option></select></label>
+            <label class="wide">상당한 보상의 내용 (해당 시)<input data-field="renewalCompensation" /></label>
+            <label>실거주자 성명<input data-field="renewalResidentName" /></label><label>임대인과의 관계<input data-field="renewalResidentRelation" placeholder="본인·직계존속·직계비속" /></label>
+            <label class="wide">구체적 사정·보충 설명<textarea data-field="renewalReasonDetails" rows="3"></textarea></label>
+            <label>작성일<input type="date" data-field="renewalNoticeDate" /></label>
           </div>
         </details>
       </form>
     </section>
+
+    <aside class="side-column">
+      <section class="card qr-card">
+        <div class="card-heading"><div><span class="eyebrow">태블릿 연결</span><h2>서명 기기 연결</h2></div><span id="tabletStatus" class="status-dot">대기 중</span></div>
+        <div id="qrCode" class="qr-code" role="img" aria-label="태블릿 연결 QR 코드"></div>
+        <p>태블릿에서 QR 코드를 스캔하거나 연결 주소를 여세요.</p>
+        <a id="tabletLink" class="text-link" href="#" target="_blank" rel="noreferrer">연결 주소 열기</a>
+        <div class="signature-status" id="signatureStatus"></div>
+      </section>
+      <section class="card action-card">
+        <h2>완성본 저장</h2>
+        <button id="downloadPdf" class="button primary full">계약서 PDF 다운로드</button>
+      </section>
+    </aside>
   </main>
   
   <script type="module" src="app.js"></script>

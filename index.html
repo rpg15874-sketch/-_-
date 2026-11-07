@@ -26,14 +26,14 @@
           <input type="text" id="searchAddress" placeholder="예: 통영시 도남동 123" style="flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
           <button type="button" id="btnSearchLand" style="padding: 8px 16px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; font-weight: bold;">조회 및 자동완성</button>
         </div>
-        <p id="searchResultMsg" style="margin-top: 8px; font-size: 13px; margin-bottom: 0;"></p>
+        <p id="searchResultMsg" style="margin-top: 8px; font-size: 13px; margin-bottom: 0; line-height: 1.4;"></p>
       </div>
 
       <form id="contractForm" autocomplete="off">
         <details open class="form-section">
           <summary><span class="step">1</span><span><strong>주택 및 계약 정보</strong><small>임차주택, 계약 종류, 기간</small></span></summary>
           <div class="form-grid">
-            <label class="wide">임차주택 소재지<input data-field="propertyAddress" placeholder="도로명주소" /></label>
+            <label class="wide">임차주택 소재지<input data-field="propertyAddress" placeholder="도로명주소 또는 지번주소" /></label>
             <label>토지 지목<input data-field="landType" /></label><label>토지 면적 (㎡)<input data-field="landArea" inputmode="decimal" /></label>
             <label>건물 구조·용도<input data-field="buildingStructure" /></label><label>건물 면적 (㎡)<input data-field="buildingArea" inputmode="decimal" /></label>
             <label>임차할 부분<input data-field="rentalPart" placeholder="동·층·호 등" /></label><label>임차 부분 면적 (㎡)<input data-field="rentalArea" inputmode="decimal" /></label>

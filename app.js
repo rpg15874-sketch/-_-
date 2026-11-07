@@ -1,5 +1,5 @@
 // 브이월드 API 인증키 (가입 후 발급받아 교체하세요)
-const VWORLD_API_KEY = "여기에_발급받은_API_KEY를_입력하세요";
+const VWORLD_API_KEY = " C4D6B4AE-FF0F-40C3-939D-CA173A17C7BF";
 
 document.getElementById('btnSearchLand').addEventListener('click', async () => {
     const address = document.getElementById('searchAddress').value.trim();

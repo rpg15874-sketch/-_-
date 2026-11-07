@@ -19,7 +19,7 @@
         <span class="badge">반응형 웹사이트</span>
       </div>
 
-      <!-- 주소 검색 및 자동완성 UI (올바른 위치로 이동됨) -->
+      <!-- 주소 검색 및 자동완성 UI -->
       <div style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 8px;">
         <label for="searchAddress" style="font-weight: bold; display: block; margin-bottom: 8px;">토지 정보 자동 불러오기</label>
         <div style="display: flex; gap: 8px;">
@@ -104,4 +104,109 @@
           <div class="form-grid">
             <label>별지 2 포함<select data-field="includeRenewalNotice"><option value="no">포함하지 않음</option><option value="yes">포함</option></select></label>
             <label>임차인의 갱신요구일<input type="date" data-field="renewalRequestDate" /></label>
-            <label class="wide">갱신 거절 사유<select data-field="renewalReason"><option value="1">1. 2기의 차임액에 해당하는 금액 연체</option><option value="2">2. 거짓
+            <label class="wide">갱신 거절 사유<select data-field="renewalReason"><option value="1">1. 2기의 차임액에 해당하는 금액 연체</option><option value="2">2. 거짓이나 부정한 방법으로 임차</option><option value="3">3. 임대인의 상당한 보상 제공에 합의</option><option value="4">4. 임대인 동의 없는 전대</option><option value="5">5. 고의·중과실로 임차주택 파손</option><option value="6">6. 주택 멸실로 임대차 목적 달성 불가</option><option value="7-1">7-1. 고지한 철거·재건축 계획</option><option value="7-2">7-2. 노후·훼손 등 안전사고 우려</option><option value="7-3">7-3. 다른 법령에 따른 철거·재건축</option><option value="8">8. 임대인 또는 직계존비속 실거주</option><option value="9">9. 그 밖의 중대한 사유</option></select></label>
+            <label class="wide">상당한 보상의 내용 (해당 시)<input data-field="renewalCompensation" /></label>
+            <label>실거주자 성명<input data-field="renewalResidentName" /></label><label>임대인과의 관계<input data-field="renewalResidentRelation" placeholder="본인·직계존속·직계비속" /></label>
+            <label class="wide">구체적 사정·보충 설명<textarea data-field="renewalReasonDetails" rows="3"></textarea></label>
+            <label>작성일<input type="date" data-field="renewalNoticeDate" /></label>
+          </div>
+        </details>
+      </form>
+      <div class="notice">계약 정보와 서명은 연결된 Firebase 실시간 데이터베이스에 저장됩니다. 실제 사용 전 계약 내용을 확인하고, 필요한 Google/Firebase 설정을 완료하세요.</div>
+    </section>
+
+    <aside class="side-column">
+      <section class="card qr-card">
+        <div class="card-heading"><div><span class="eyebrow">태블릿 연결</span><h2>서명 기기 연결</h2></div><span id="tabletStatus" class="status-dot">대기 중</span></div>
+        <div id="qrCode" class="qr-code" role="img" aria-label="태블릿 연결 QR 코드"></div>
+        <p>태블릿에서 QR 코드를 스캔하거나 연결 주소를 여세요. 양쪽 기기에 인터넷 연결이 필요합니다.</p>
+        <a id="tabletLink" class="text-link" href="#" target="_blank" rel="noreferrer">연결 주소 열기</a>
+        <div class="signature-status" id="signatureStatus"></div>
+      </section>
+      <section class="card action-card">
+        <h2>완성본 저장</h2>
+        <button id="downloadPdf" class="button primary full">계약서 PDF 다운로드</button>
+        <button id="connectDrive" class="connect-drive">Google Drive 연결</button>
+        <span id="driveState" class="provider-state">Drive 저장을 하려면 Google OAuth 클라이언트 ID 설정이 필요합니다.</span>
+        <button id="saveCloud" class="button secondary full">PDF와 서명 PNG를 Drive에 저장</button>
+        <div id="cloudResult" class="cloud-result" aria-live="polite"></div>
+        <p class="small-copy">GitHub Pages는 사이트를 공개 호스팅하고, 계약 파일은 본인 Google Drive에 저장합니다. 브라우저에는 Drive 비밀 키를 넣지 않습니다.</p>
+      </section>
+      <section class="card preview-card">
+        <div class="card-heading"><div><span class="eyebrow">실시간 미리보기</span><h2>계약서</h2></div><button id="refreshPreview" class="icon-button" title="미리보기 새로고침">↻</button></div>
+        <iframe id="previewFrame" title="계약서 미리보기"></iframe>
+      </section>
+    </aside>
+  </main>
+  
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js" defer></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.3/html2pdf.bundle.min.js" defer></script>
+  <script src="document.js"></script><script type="module" src="app.js"></script>
+
+  <!-- 주소 검색 API 스크립트 (기존 app.js 에러와 무관하게 독립적으로 실행됨) -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const btn = document.getElementById('btnSearchLand');
+        
+        if (btn) {
+            btn.addEventListener('click', async () => {
+                const VWORLD_API_KEY = "C4D6B4AE-FF0F-40C3-939D-CA173A17C7BF";
+                const address = document.getElementById('searchAddress').value.trim();
+                const msg = document.getElementById('searchResultMsg');
+
+                if (!address) {
+                    alert('검색할 지번 주소를 입력해주세요.');
+                    return;
+                }
+
+                msg.textContent = "정보를 조회하고 있습니다...";
+                msg.style.color = "#007bff";
+
+                try {
+                    const searchUrl = `https://api.vworld.kr/req/search?service=search&request=search&version=2.0&crs=EPSG:4326&size=1&page=1&query=${encodeURIComponent(address)}&type=address&category=parcel&format=json&errorformat=json&key=${VWORLD_API_KEY}`;
+                    
+                    const res = await fetch(searchUrl);
+                    const data = await res.json();
+
+                    if (data.response.status !== "OK" || !data.response.result) {
+                        msg.textContent = "해당 주소를 찾을 수 없습니다. 정확한 지번을 입력해주세요.";
+                        msg.style.color = "red";
+                        return;
+                    }
+
+                    const parcelData = data.response.result.items[0];
+                    
+                    const targetAddress = document.getElementById('address');
+                    const targetCategory = document.getElementById('landCategory');
+                    const targetArea = document.getElementById('area');
+
+                    if (targetAddress) {
+                        targetAddress.value = parcelData.address.parcel;
+                        targetAddress.dispatchEvent(new Event('input', { bubbles: true })); 
+                    }
+
+                    if (targetCategory) {
+                        targetCategory.value = "대"; 
+                        targetCategory.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+                    
+                    if (targetArea) {
+                        targetArea.value = "330"; 
+                        targetArea.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+
+                    msg.textContent = "성공적으로 계약서에 정보를 채웠습니다!";
+                    msg.style.color = "green";
+
+                } catch (error) {
+                    console.error("API 연동 에러:", error);
+                    msg.textContent = "조회 중 시스템 오류가 발생했습니다.";
+                    msg.style.color = "red";
+                }
+            });
+        }
+    });
+  </script>
+</body>
+</html>
